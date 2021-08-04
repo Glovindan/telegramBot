@@ -1,8 +1,12 @@
 const {Scenes,  Markup, Telegraf} = require('telegraf');
+const DB = require('./DataBase/db.js');
+const dataBase = new DB();
 
-const QUESTION = ["Сколько мне лет?","Какого цвета крокодил?(Например: синий)","Какой день недели самый последний"];
-const ANSWER = ["22","Зеленый","Воскресенье"];
-let counter = 0;
+// const QUESTION = ["Сколько мне лет?","Какого цвета крокодил?(Например: синий)","Какой день недели самый последний"];
+// const ANSWER = ["22","Зеленый","Воскресенье"];
+// let counter = 0;
+
+
 class SceneGenerator {
   GenAnswerScene () {
     const answer = new Scenes.BaseScene('answer');
@@ -14,7 +18,6 @@ class SceneGenerator {
           Markup.button.callback('Не отвечать.','Deny')
         ]).oneTime().resize()
       )
-      //Здесь выдать кнопку выйти
     })
     answer.action('Deny', async(ctx) => {
       await ctx.reply(`Что ж...`);
@@ -23,9 +26,13 @@ class SceneGenerator {
 
     answer.on('text', async(ctx) => {
       const text = ctx.message.text;
-      if(text.toLowerCase() === ANSWER[counter].toLowerCase()) {
+      const telegramId = ctx.message.from.id;
+      const user = await dataBase.findUser(telegramId);
+      const question = await dataBase.getQuestion(user.counter);
+
+      if(text.toLowerCase() === question.answerText.toLowerCase()) {
         await ctx.reply(`Правильно.`);
-        counter++;
+        await dataBase.increaseCounter(telegramId);
         await ctx.scene.enter('question')
       } else {
         await ctx.reply(`Не правильно.`);
@@ -41,11 +48,16 @@ class SceneGenerator {
     question.use(Telegraf.log());
 
     question.enter(async (ctx) => {
-      if (counter === QUESTION.length) {
+      const telegramId = ctx.message.from.id;
+      const user = await dataBase.findUser(telegramId);
+      const question = await dataBase.getQuestion(user.counter);
+      const questionsCount = await dataBase.getQuestionsCount();
+
+      if (user.counter === questionsCount) {
         await ctx.reply(`Ты ответил на все вопросы, поздравляю!`);
         await ctx.scene.leave();
       } else {
-        await ctx.reply(QUESTION[counter],
+        await ctx.reply(question.questionText,
           Markup.inlineKeyboard([
             Markup.button.callback('Ответить.','Answer')
           ])

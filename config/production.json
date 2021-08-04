@@ -1,5 +1,8 @@
 {
   "Telegraf" : {
     "token": "put your telegram token here"
+  },
+  "MongoDB" : {
+    "mongoURI": "insert text"
   }
 }

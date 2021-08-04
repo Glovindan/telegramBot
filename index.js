@@ -7,23 +7,36 @@ const curScene = new SceneGenerator();
 const answerScene = curScene.GenAnswerScene();
 const questionScene = curScene.GenQuestionScene();
 
+const DB = require('./DataBase/db.js');
+const dataBase = new DB();
+
 const stage = new Scenes.Stage([answerScene, questionScene]);
 
 bot.use(session());
 bot.use(stage.middleware());
 
 bot.start(async (ctx) => {
-  //Зарегать юзера
+  const telegramId = ctx.message.from.id;
+  const findUser = await dataBase.findUser(telegramId);
+  if(!findUser) {
+    await dataBase.setNewUser(telegramId);
+  }
+  
   await ctx.reply(`Вот ты и здесь, ${ctx.message.from.first_name}...`);
   await ctx.scene.enter('question');
 })
 
 bot.command('reset', async(ctx) => {
-  //counter = 0
+  const telegramId = ctx.message.from.id;
+  const findUser = await dataBase.findUser(telegramId);
+  if(findUser) {
+    await dataBase.resetCounter(telegramId);
+  };
   ctx.reply('Сброшено');
 });
 
-bot.launch().then((err,res) => {
+bot.launch().then(async (err,res) => {
+  await dataBase.start();
   console.log('Started');
 })
 
