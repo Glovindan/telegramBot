@@ -1,0 +1,31 @@
+{
+  "name": "telegrambot",
+  "version": "1.0.0",
+  "description": "test bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "app": "nodemon ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Glovindan/telegramBot.git"
+  },
+  "keywords": [
+    "telegram",
+    "node",
+    "js",
+    "bot"
+  ],
+  "author": "Glovindan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Glovindan/telegramBot/issues"
+  },
+  "homepage": "https://github.com/Glovindan/telegramBot#readme",
+  "dependencies": {
+    "config": "^3.3.6",
+    "nodemon": "^2.0.12",
+    "telegraf": "^4.4.1"
+  }
+}
