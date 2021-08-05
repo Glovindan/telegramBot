@@ -13,15 +13,7 @@ class SceneGenerator {
     answer.use(Telegraf.log());
 
     answer.enter(async (ctx) => {
-      await ctx.reply('Напиши мне ответ на вопрос или...',
-        Markup.inlineKeyboard([
-          Markup.button.callback('Не отвечать.','Deny')
-        ]).oneTime().resize()
-      )
-    })
-    answer.action('Deny', async(ctx) => {
-      await ctx.reply(`Что ж...`);
-      await ctx.scene.enter('question');
+      // await ctx.reply('Напиши мне ответ на вопрос')
     })
 
     answer.on('text', async(ctx) => {
@@ -48,20 +40,19 @@ class SceneGenerator {
     question.use(Telegraf.log());
 
     question.enter(async (ctx) => {
-      const telegramId = ctx.message.from.id;
+      const telegramId = await ctx.message.from.id;
       const user = await dataBase.findUser(telegramId);
       const question = await dataBase.getQuestion(user.counter);
       const questionsCount = await dataBase.getQuestionsCount();
 
       if (user.counter === questionsCount) {
-        await ctx.reply(`Ты ответил на все вопросы, поздравляю!`);
+        await ctx.reply(`Анекдот дня:\n
+- почему педофил не дает детям конфет?\n
+- боится, что жопа слипнется`);
         await ctx.scene.leave();
       } else {
-        await ctx.reply(question.questionText,
-          Markup.inlineKeyboard([
-            Markup.button.callback('Ответить.','Answer')
-          ])
-        )
+        await ctx.reply(question.questionText);
+        await ctx.scene.enter('answer')
       }
     });
 

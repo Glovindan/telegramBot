@@ -21,7 +21,7 @@ bot.start(async (ctx) => {
   if(!findUser) {
     await dataBase.setNewUser(telegramId);
   }
-  
+
   await ctx.reply(`Вот ты и здесь, ${ctx.message.from.first_name}...`);
   await ctx.scene.enter('question');
 })
