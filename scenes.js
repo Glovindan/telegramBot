@@ -56,7 +56,7 @@ class SceneGenerator {
         await ctx.scene.leave();
       } else {
         await ctx.reply(question.questionText);
-        await ctx.telegram.sendMessage(adminId,`<b>${ctx.message.from.first_name}</b> <i>получил вопрос</i> \n <i>Вопрос:</i> <b>"${question.questionText}"</b> \n <i>Правильный ответ:</i> <b>"${question.answerText}"</b>`, { parse_mode: "html" });
+        await ctx.telegram.sendMessage(adminId,`<b>${ctx.message.from.first_name}</b> <i>получил вопрос</i> \n<i>Вопрос:</i> <b>"${question.questionText}"</b> \n<i>Правильный ответ:</i> <b>"${question.answerText}"</b>`, { parse_mode: "html" });
         await ctx.scene.enter('answer')
       }
     });

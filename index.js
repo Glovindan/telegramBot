@@ -25,7 +25,7 @@ bot.start(async (ctx) => {
   }
 
   console.log(ctx.message.from);
-  ctx.telegram.sendMessage(adminId,`*${ctx.message.from.first_name}* запустил бота`, { parse_mode: "MarkdownV2" });
+  ctx.telegram.sendMessage(adminId,`*${ctx.message.from.first_name}* _запустил бота_`, { parse_mode: "MarkdownV2" });
 
   await ctx.reply(`Вот ты и здесь, ${ctx.message.from.first_name}...`);
   await ctx.scene.enter('question');
