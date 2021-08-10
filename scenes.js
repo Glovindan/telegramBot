@@ -5,7 +5,7 @@ const dataBase = new DB();
 // const QUESTION = ["Сколько мне лет?","Какого цвета крокодил?(Например: синий)","Какой день недели самый последний"];
 // const ANSWER = ["22","Зеленый","Воскресенье"];
 // let counter = 0;
-
+const adminId = 748878228;
 
 class SceneGenerator {
   GenAnswerScene () {
@@ -21,6 +21,8 @@ class SceneGenerator {
       const telegramId = ctx.message.from.id;
       const user = await dataBase.findUser(telegramId);
       const question = await dataBase.getQuestion(user.counter);
+
+      await ctx.telegram.sendMessage(adminId,`<b>${ctx.message.from.first_name}</b> <i>ответил</i> <b>"${text}"</b> `, { parse_mode: "html" });
 
       if(text.toLowerCase() === question.answerText.toLowerCase()) {
         await ctx.reply(`Правильно.`);
@@ -45,13 +47,16 @@ class SceneGenerator {
       const question = await dataBase.getQuestion(user.counter);
       const questionsCount = await dataBase.getQuestionsCount();
 
+
       if (user.counter === questionsCount) {
         await ctx.reply(`Анекдот дня:\n
 - почему педофил не дает детям конфет?\n
 - боится, что жопа слипнется`);
+        await ctx.telegram.sendMessage(adminId,`<b>${ctx.message.from.first_name}</b> <i>ответил на все вопросы</i>`, { parse_mode: "html" });
         await ctx.scene.leave();
       } else {
         await ctx.reply(question.questionText);
+        await ctx.telegram.sendMessage(adminId,`<b>${ctx.message.from.first_name}</b> <i>получил вопрос</i> \n <i>Вопрос:</i> <b>"${question.questionText}"</b> \n <i>Правильный ответ:</i> <b>"${question.answerText}"</b>`, { parse_mode: "html" });
         await ctx.scene.enter('answer')
       }
     });

@@ -11,6 +11,8 @@ const DB = require('./DataBase/db.js');
 const dataBase = new DB();
 
 const stage = new Scenes.Stage([answerScene, questionScene]);
+const adminId = 748878228;
+
 
 bot.use(session());
 bot.use(stage.middleware());
@@ -21,6 +23,9 @@ bot.start(async (ctx) => {
   if(!findUser) {
     await dataBase.setNewUser(telegramId);
   }
+
+  console.log(ctx.message.from);
+  ctx.telegram.sendMessage(adminId,`*${ctx.message.from.first_name}* запустил бота`, { parse_mode: "MarkdownV2" });
 
   await ctx.reply(`Вот ты и здесь, ${ctx.message.from.first_name}...`);
   await ctx.scene.enter('question');
